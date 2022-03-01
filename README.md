@@ -1,11 +1,14 @@
 # Notes+ Application
 
-## This is a Note + Checklist web application created by using MERN stack.
+## Note + Checklist responsive web application auth by JWT built using MongoDB, Express, NodeJS, ReactJS
 
-**Add your own .env files like the following example:**
+![](/docs/notes-1.png)
+
+[Live Demo](https://notes.jeansdev.com)
+
+### Add your own .env files like the following example: ###
 
 **.env (Back-End)**
-
 ```
 DEV_PORT=8080
 SECRET=JWTSecretKey
