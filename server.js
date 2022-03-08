@@ -5,16 +5,11 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-// ----- for dev and split-them-apart deploy -----
-
 const cors = require("cors");
-
 var corsOptions = {
     origin: process.env.CORES_ORIGIN
   };
 app.use(cors(corsOptions));
-
-// ----------
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));

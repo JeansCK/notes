@@ -90,8 +90,8 @@ const Register = (props) => {
         (response) => {
           setMessage(response.data.message);
           setSuccessful(true);
-          NotesService.createHelpNote(response.data.user._id)
           AuthService.login(username, password).then(() => {
+            NotesService.createHelpNote()
             history.push("/notes");
           });
         },

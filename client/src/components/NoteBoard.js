@@ -5,7 +5,6 @@ import NotesService from "../services/notes.service";
 import Note from "./Note";
 
 import AppBar from '@mui/material/AppBar';
-import Container from '@mui/material/Container';
 import Toolbar from '@mui/material/Toolbar';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
@@ -32,19 +31,19 @@ const NoteBoard = (props) => {
   });
   
   async function getNotes() {
-    await NotesService.getNotesByUser(currentUser.id)
+    await NotesService.getNotesByUser()
     .then(res => setNotes(res.data));
   }
 
   function addNote() {
     setIsNewNote(true)
-    NotesService.createDefaultNote(currentUser.id)
+    NotesService.createDefaultNote()
       .then(() => getNotes());
   }
 
   function addHelpNote() {
     setIsNewNote(true)
-    NotesService.createHelpNote(currentUser.id)
+    NotesService.createHelpNote()
       .then(() => getNotes());
   }
 

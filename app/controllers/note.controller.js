@@ -7,7 +7,7 @@ exports.createDefaultNote = (req, res) => {
     title: "",
     description: "",
     items: [],
-    user: req.params.userId,
+    user: req.userId,
     color: "#FFFDA2"
   });
   note.save(err => {
@@ -37,7 +37,7 @@ exports.createHelpNote = (req, res) => {
         checked: false
       }
     ],
-    user: req.params.userId,
+    user: req.userId,
     color: "#FFFDA2"
   });
   note.save(err => {
@@ -50,14 +50,16 @@ exports.createHelpNote = (req, res) => {
 }
 
 exports.updateNote = (req, res) => {
-  Notes.findByIdAndUpdate(req.body.id, {
+  Notes.findOneAndUpdate({user: req.userId, _id: req.body.id}, {
     title: req.body.title,
     description: req.body.description,
     color: req.body.color
     },
-    function(err) {
+    function(err, note) {
       if (err) {
         res.send(err);
+      } else if (!note) {
+        res.send("Note not found");
       } else {
         res.send("Successfully update");
       }
@@ -66,9 +68,11 @@ exports.updateNote = (req, res) => {
 }
 
 exports.deleteNote = (req, res) => {
-  Notes.findByIdAndDelete(req.query.id, err => {
+  Notes.findOneAndDelete({user: req.userId, _id: req.params.noteId}, (err, note) => {
     if (err) {
       res.send(err);
+    } else if (!note) {
+      res.send("Note not found");
     } else {
       res.send("Successfully delete");
     }
@@ -76,7 +80,7 @@ exports.deleteNote = (req, res) => {
 }
 
 exports.findNoteByUser = (req, res) => {
-  Notes.find({user: req.query.user}, (err, notes) => {
+  Notes.find({user: req.userId}, (err, notes) => {
     if (notes) {
       res.send(notes);
     } else {
@@ -86,7 +90,7 @@ exports.findNoteByUser = (req, res) => {
 }
 
 exports.findNoteById = (req, res) => {
-  Notes.findById(req.query.id, (err, note) => {
+  Notes.findOne({user: req.userId, _id: req.params.noteId}, (err, note) => {
     if (note) {
       res.send(note);
     } else {
@@ -100,25 +104,34 @@ exports.createItem = (req, res) => {
     item: req.body.item,
     checked: req.body.checked
   })
-  Notes.findById(req.body.noteId, function(err, note) {
-    note.items.push(item);
-    note.save(err => {
-      if (err) {
-        res.send(err);
-      } else {
-        res.send("Successfully create");
-      }
-    });
+  
+  Notes.findOne({user: req.userId, _id: req.body.noteId}, function(err, note) {
+    if (err) {
+      res.send(err);
+    } else if (!note) {
+      res.send("Note not found")
+    } else {
+      note.items.push(item);
+      note.save(err => {
+        if (err) {
+          res.send(err);
+        } else {
+          res.send("Successfully create");
+        }
+      });
+    }
   });
 }
 
 exports.updateItem = (req, res) => {
   Notes.findOneAndUpdate(
-    {"_id": req.body.noteId, "items._id": req.body.itemId},
+    {user: req.userId, "_id": req.body.noteId, "items._id": req.body.itemId},
     {$set: {"items.$.item": req.body.item, "items.$.checked": req.body.checked}},
-    function(err) {
+    function(err, item) {
       if (err) {
         res.send(err);
+      } else if (!item) {
+        res.send("Item not found");
       } else {
         res.send("Successfully updated");
       }
@@ -128,11 +141,13 @@ exports.updateItem = (req, res) => {
 
 exports.deleteItem = (req, res) => {
   Notes.findOneAndUpdate(
-    {"_id": req.query.noteId}, 
-    {$pull: {"items": {"_id": req.query.itemId}}}, 
-    function(err) {
+    {user: req.userId, "_id": req.params.noteId}, 
+    {$pull: {"items": {"_id": req.params.itemId}}},
+    function(err, note) {
       if (err) {
         res.send(err);
+      } else if (!note) {
+        res.send("Note not found");
       } else {
         res.send("Successfully delete");
     }

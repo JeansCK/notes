@@ -55,7 +55,7 @@ function Note(props) {
       item: "",
       checked: false
     };
-    NotesService.createItem(note._id, data)
+    NotesService.createItem(data)
       .then(() => getNote(note._id));
   }
 

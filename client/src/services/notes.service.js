@@ -1,39 +1,42 @@
-import http from "../http-common";
+import axios from "axios";
+import authHeader from "./auth-header";
 
-function createDefaultNote(userId) {
-    return http.post(`/notes/user/${userId}`);
+const API_URL = process.env.REACT_APP_API_URL;
+
+function createDefaultNote() {
+    return axios.post(`${API_URL}/notes`, "", { headers: authHeader() });
 };
 
-function createHelpNote(userId) {
-    return http.post(`/notes/help/user/${userId}`)
+function createHelpNote() {
+    return axios.post(`${API_URL}/notes/help`, "", { headers: authHeader() });
 }
 
 function getNoteById(id) {
-    return http.get(`/notes?id=${id}`);
+    return axios.get(`${API_URL}/notes/${id}`, { headers: authHeader() });
 }
 
-function getNotesByUser(id) {
-    return http.get(`/notes/user?user=${id}`);
+function getNotesByUser() {
+    return axios.get(`${API_URL}/notes`, { headers: authHeader() });
 }
 
 function updateNote(data) {
-    return http.patch("/notes", data);
+    return axios.patch(`${API_URL}/notes`, data, { headers: authHeader() });
 }
 
 function deleteNote(id) {
-    return http.delete(`/notes?id=${id}`);
+    return axios.delete(`${API_URL}/notes/${id}`, { headers: authHeader() });
 }
 
-function createItem(noteId, data) {
-    return http.post("/notes/items", data);
+function createItem(data) {
+    return axios.post(`${API_URL}/notes/item`, data, { headers: authHeader() });
 }
 
 function updateItem(data) {
-    return http.patch("/notes/items", data);
+    return axios.patch(`${API_URL}/notes/item`, data, { headers: authHeader() });
 }
 
 function deleteItem(noteId, itemId) {
-    return http.delete(`/notes/items?noteId=${noteId}&itemId=${itemId}`);
+    return axios.delete(`${API_URL}/notes/${noteId}/item/${itemId}`, { headers: authHeader() });
 }
 
 const exports = {

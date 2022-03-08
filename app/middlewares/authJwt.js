@@ -10,7 +10,6 @@ verifyToken = (req, res, next) => {
     return res.status(403).send({ message: "No token provided!" });
   }
 
-  // jwt.verify(token, config.secret, (err, decoded) => { // Use env instead
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
     if (err) {
       return res.status(401).send({ message: "Unauthorized!" });
